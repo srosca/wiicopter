@@ -30,6 +30,27 @@ Start out by making small movements with the board, and then try making small mo
 
 If you need to stop the copter at any point simply jump off the Wii Balance Board: the copter will immediately halt and execute a controlled landing.  You should be able to restart the copter by standing back on the board and pressing A.
 
+
+## Future Ideas
+
+### Bind the Other Controls on the WiiMote
+
+* Take photos
+* Shoot video
+* Play light sequences
+
+### Immersive Control System
+
+Get a set of those Sony video glasses and feed the camera from the copter into them, creating a totally immersive control system.
+
+### Use an Oculus Rift Headset as Well
+
+Use an Oculus Rift headset to display the video, but also control the direction that the copter is pointing. So if you look to the side it will do the same. You'd still need the WiiMote for steering the copter as turning your head would only be able to turn you about 180 degrees.
+
+This could be really fun. Get the sync between the head position from the Rift and the rotation of the copter might be tricky, but should be possible.
+
+So who wants to sponsor us to get a Rift when they come out, for a NodeCopter event? :)
+
 ## Adapted from:
 
 * https://github.com/levity/svi-balance-board
