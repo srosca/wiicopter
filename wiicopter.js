@@ -38,17 +38,16 @@ function launch_copter() {
   // Start up drone client
   client = arDrone.createClient();
   client.disableEmergency();
+  client.takeoff();
+  flying = true;
 }
-
 
 function run_cmds(s) {
   console.log(s);
 
   if (s.a) {
     // Press the A button to take off.
-    client.disableEmergency();
-    client.takeoff();
-    flying = true;
+    launch_copter();
   } else if (s.b) {
     // Press the B (trigger) button to do a flip
     client.animate('flipAhead', 1500);
@@ -72,7 +71,6 @@ function run_cmds(s) {
     client.up(s.pitch - 0.5);
   }
 }
-
 
 // Event handler for the data received from the Wii via OSCulator
 osc_serv.on('message', function (msg, a) {
