@@ -4,6 +4,8 @@ Control a [NodeCopter](http://nodecopter.com) using the Wii Fit Balance Board an
 
 Wii Fit Balance Board/Wii Remote -> [Osculator](http://www.osculator.net) -> This (node wiicopter.js) -> NodeCopter
 
+[Video of @juliancheal and @sammachin using it](http://telly.com/A56FVW) - including Julian making use of the emergency cut out :)
+
 ## Connecting to the Controllers
 
 To get the data from the controllers I've used [Osculator](http://www.osculator.net) for OS X. The file WiiCopter.oscd is a configuration that should work.
