@@ -51,6 +51,15 @@ This could be really fun. Get the sync between the head position from the Rift a
 
 So who wants to sponsor us to get a Rift when they come out, for a NodeCopter event? :)
 
+## Improvements to Make
+
+* Dry up the code a little more
+* Enable full sensitivity
+* Configurable sensitivity
+* Configuration for the button actions
+* Free up the A button for other uses during flight.
+* Use the navigation data stream to make the whole thing more reliable, for example using the altimeter to tell us when we are in the air, rather than trying to infer it.
+
 ## Adapted from:
 
 * https://github.com/levity/svi-balance-board
