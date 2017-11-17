@@ -42,83 +42,89 @@ function launch_copter() {
   flying = true;
 }
 
-function run_cmds(s) {
-  console.log(s);
+var weight = 0;
+var amountToSend=0;
 
-  if (s.a) {
-    // Press the A button to take off.
-    launch_copter();
-  } else if (s.b) {
-    // Press the B (trigger) button to do a flip
-    client.animate('flipAhead', 1500);
-  } else if (!s.fly && flying) {
-    // Emergency cut out.
-    // Stop the copter and land it.
-    client.stop();
-    client.land();
-    flying = false;
-  } else {
-    // Just grab the control data and send commands
-    // Data from the Wii is 0 to 1 with 0.5 being neutral position
-    // We subtract 0.5 to make it work for the nodecopter.
-    // Note that this approach also reduces the sensitivity, making
-    // the copter a bit slower but easier to fly.
-    // We could easily map directy on a 1 for 1 scale, but would probably
-    // make it quite twitchy.
-    client.clockwise(s.roll - 0.5);
-    client.front(s.y - 0.5);
-    client.right(s.x - 0.5);
-    client.up(s.pitch - 0.5);
-  }
+
+function run_cmds(s) {
+    console.log(amountToSend);
+    if (s.x < 0.4){
+      // console.log(1)
+        amountToSend = amountToSend + 10;
+        return
+    }else if (s.x > 0.6){
+        // console.log(2)
+
+        amountToSend = amountToSend - 10;
+        return
+    }
+
+    if(smooth(s.sum,2)*100 *0.9 > weight || smooth(s.sum,2)*100 * 1.1 < weight){
+        amountToSend = smooth(s.sum,2)*100;
+    }
+    weight = smooth(s.sum,2)*100;
+
+
+
+
+
+    // console.log(s);
+
 }
 
 // Event handler for the data received from the Wii via OSCulator
+var buffer = 0;
 osc_serv.on('message', function (msg, a) {
-  var val = osc.decode(msg);
-  
-  // The first item in the val array is the device
-  // e.g "/wii/2/balance" is the balance board
-  // The remaining data is the variables from the controller.
-  field = val[0];
-  controller = field.split("/").pop(); // Which controller?
-  
-  switch(controller) {
-    case 'balance':
-      // Get the X/Y postion of the CoG on the Balance Board
-      state.x = smooth(val[6], 1);
-      state.y = smooth(val[7], 1);
-      
-      // Get the "sum" value for the balance board
-      state.sum = val[5];
-      if (state.sum < 0.2)
-        // There's nobody on the board, so stop the copter
-        state.go = false;
-      else
-        state.go = true;
-      break;
-    case 'A':
-      if (val[1] == 1)
-        state.a = true;
-      else
-        state.a = false;
-      break;
-    case 'B':
-      if (val[1] == 1)
-        state.b = true;
-      else
-        state.b = false;  
-      break;
-    case 'pry':
-      // This is the accelerometer data from the WiiMote
-      state.pitch = smooth(val[1], 1);
-      state.roll  = smooth(val[2], 1);
-      break;
+  buffer++;
+  if (buffer === 10){
+    buffer = 0;
+      var val = osc.decode(msg);
+      // console.log('Data',val);
+
+      // The first item in the val array is the device
+      // e.g "/wii/2/balance" is the balance board
+      // The remaining data is the variables from the controller.
+      field = val[0];
+      controller = field.split("/").pop(); // Which controller?
+
+      switch(controller) {
+          case 'balance':
+              // Get the X/Y postion of the CoG on the Balance Board
+              state.x = smooth(val[6], 1);
+              state.y = smooth(val[7], 1);
+
+              // Get the "sum" value for the balance board
+              state.sum = val[5];
+              if (state.sum < 0.2)
+              // There's nobody on the board, so stop the copter
+                  state.go = false;
+              else
+                  state.go = true;
+              break;
+          case 'A':
+              if (val[1] == 1)
+                  state.a = true;
+              else
+                  state.a = false;
+              break;
+          case 'B':
+              if (val[1] == 1)
+                  state.b = true;
+              else
+                  state.b = false;
+              break;
+          case 'pry':
+              // This is the accelerometer data from the WiiMote
+              state.pitch = smooth(val[1], 1);
+              state.roll  = smooth(val[2], 1);
+              break;
+      }
+
+      // Having updated the state we send the relevant commands
+      // to the copter.
+      run_cmds(state);
   }
-  
-  // Having updated the state we send the relevant commands
-  // to the copter.
-  run_cmds(state);
-})
+});
 
 // listen for incoming messages from Osculator client
 // be sure to set port and IP address to where your
