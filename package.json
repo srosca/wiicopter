@@ -1,0 +1,30 @@
+{
+  "name": "wiicopter",
+  "version": "1.0.0",
+  "description": "Control a [NodeCopter](http://nodecopter.com) using the Wii Fit Balance Board and a Wii Remote.",
+  "main": "wiicopter.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "ar-drone": "^0.0.5",
+    "connect": "^1.9.2",
+    "express": "^2.5.11",
+    "jspack": "0.0.1",
+    "socket.io": "1.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srosca/wiicopter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/srosca/wiicopter/issues"
+  },
+  "homepage": "https://github.com/srosca/wiicopter#readme"
+}

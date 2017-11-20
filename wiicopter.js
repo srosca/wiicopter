@@ -1,11 +1,9 @@
 var connect = require('connect'),
   fs = require('fs'),
-  socketIO = require('socket.io'),
   jspack = require('./lib/node-jspack/jspack').jspack,
   express = require('express'),
   osc = require('./lib/osc');
 
-var arDrone = require('ar-drone');
 var client;
 
 // Prepare listening socket for the OSC data
@@ -42,28 +40,63 @@ function launch_copter() {
   flying = true;
 }
 
+
+// var allowedOrigins = "http://local.digital.travelex.net:4500";
+// var io = require('socket.io').listen(2323, {origins: allowedOrigins});
+// io.on('connection', function(client){});
+
+var app = require('http').createServer(),
+    io = require('socket.io').listen(app);
+var sockets;
+io.sockets.on('connection', function(socket) {
+    sockets = socket;
+});
+app.listen(2323);
+
+// var iii= 100;
+// setInterval(function () {
+//     io.sockets.send(iii);
+//     console.log(iii);
+//     iii++;
+// },100);
+
 var weight = 0;
 var amountToSend=0;
-
+var multiplyLeft=1;
+var multiplyRight=1;
 
 function run_cmds(s) {
     console.log(amountToSend);
-    if (s.x < 0.4){
-      // console.log(1)
-        amountToSend = amountToSend + 10;
+
+    io.sockets.send(amountToSend);
+
+    if (s.y > 0.6) {
+        amountToSend += 1000;
         return
-    }else if (s.x > 0.6){
+    }
+    if (s.y < 0.4) {
+        amountToSend -= 1000;
+        return
+    }
+    if (s.x < 0.4) {
+        amountToSend = amountToSend + 10 * multiplyLeft;
+        multiplyLeft++;
+        return
+    } else if (s.x > 0.6) {
         // console.log(2)
 
-        amountToSend = amountToSend - 10;
+        amountToSend = amountToSend - 10 *multiplyRight;
+        multiplyRight++;
         return
     }
-
-    if(smooth(s.sum,2)*100 *0.9 > weight || smooth(s.sum,2)*100 * 1.1 < weight){
-        amountToSend = smooth(s.sum,2)*100;
+    if(s.x = 0.5){
+        multiplyLeft=1;
+        multiplyRight=1;
     }
-    weight = smooth(s.sum,2)*100;
-
+    if (smooth(s.sum, 2) * 100 * 0.9 > weight || smooth(s.sum, 2) * 100 * 1.1 < weight) {
+        amountToSend = smooth(s.sum, 2) * 100;
+    }
+    weight = smooth(s.sum, 2) * 100;
 
 
 
